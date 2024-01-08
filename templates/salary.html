@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}
+Oylik Maoshlar
+{% endblock title %}
+{% block content %}
+<div class="row-12 py-2 mt-2">
+    <div class="col-12 ">
+        <form class="d-flex" method="get">
+            <select name="year" class="form-control">
+                <option> {{ now_year }} </option>
+                {% for year in years %}
+                    <option  value="{{ year }}">{{ year }}</option>
+                {% endfor %}
+            </select>
+            <select  class="form-control mx-2" name="month" >
+                {% for month in months %}
+                <option value="{{ month }}" >{{ month }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-primary" >Saralash</button>
+        </form>
+    </div>
+</div>
+
+<div class="row mt-4 ">
+    <div class="col-12 mt-2 text-center"><h4>O'qituvchilar</h4></div>
+    
+</div>
+
+<div class="row mt-2 ">
+    <div class="col-12">
+        <table class="table ">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Ism Familiya</th>
+                <th scope="col">Username</th>
+                <th scope="col">Telefon</th>
+                <th scope="col">Guruh</th>
+                <th scope="col">Hodisalar</th>
+
+              </tr>
+            </thead>
+            <tbody>
+                {% for teacher in teachers %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td><a href="{% url 'teacher_detail' teacher.username year month %}">{{ teacher.first_name }} {{ teacher.last_name }}</a></td>
+                <td>{{ teacher.username }} </td>
+                <td>{{ teacher.phone_number }}</td>
+                <td>{% for group in teacher.group_set.all %} {{ group.name }}, {% endfor %}</td>
+                {% if request.user.user_role == 'super' %}
+                <td  >
+                    
+                  
+                    <a style="text-decoration: none;" href="{% url 'edit_password' teacher.username %}" class=""><i class="bi bi-pen-fill"></i></a> 
+                </td>
+                {% endif %}
+             </tr>
+             {% endfor %}
+
+            </tbody>
+          </table>
+    </div>
+</div>
+{% endblock content %}

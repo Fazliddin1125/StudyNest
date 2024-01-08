@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Payment{% endblock title %}
+{% block content %}
+<div class="row mt-4" >
+    <div class="col-6 offset-3" >
+        <div class="card" >
+            <div class="card-header" >
+                <h1>Payment</h1>
+            </div>
+            <div class="card-body" >
+                <form method="post" >
+                    {% csrf_token %}
+                    <div class="form-group pt-2 mt-2" >
+                        <label for="username">Username</label>
+                        <input type="text" value="{{ payment.student.username }}" class="form-control" id="username" name="username"  placeholder="{{ payment.student.username }}">
+                    </div>
+
+                    <div class="form-group mt-2 pt-2" >
+                         <label for="group">Guruh--{{ payment.group }}</label>
+                            <select required name="group" class="form-control" id="group">
+                              {% for group in groups %}
+                                 <option value="{{ group.group.id }}" >{{ group.group }}--{{ group.group.pay }}</option>
+                                {% endfor %}
+                            </select>
+                    </div>
+                    <div class="mt-2 pt-2" ></div>
+                    <label>Summa-{{ payment.count }}</label>
+                    <div class="d-flex" >
+
+                        <div class="col w-50  p-1 " >
+                            <label for="cash" >Naqt pul</label>
+                            <input required id="cash" value="{{ payment.cash }}"  type="number" min="0" class="form-control"  name="cash"  placeholder="{{ payment.cash }}">
+                        </div>
+                        <div class="col w-50 p-1 " >
+                            <label for="card" >Karta</label>
+                        <input  required id="card" value="{{ payment.card }}" min="0" type="number" class="form-control"  name="card"  placeholder="{{ payment.card }}">
+                        </div>
+                    </div>
+                    <div class="form-group mt-2 pt-2" >
+                         <label  for="date">Vaqt-{{ payment.date }}</label>
+                        <input required type="date" id="date" class="form-control" value="{{ payment.date }}"  name="date"  >
+                    </div>
+                    <button type="submit" class="btn btn-warning mt-4 " >Yuborish</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

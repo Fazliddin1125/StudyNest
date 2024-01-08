@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% block title %}
+Salary Calculate
+{% endblock title %}
+
+{% block content %}
+
+<div class="row mt-4">
+    <div class="col-12 text-center"><h4>{{ teacher.first_name }} {{ teacher.last_name }}ning  {{ year }}-yil {{ month }} oyi uchun oylik maoshi-{{ count }}</h4></div>
+    <div class="col-12 text-center"><h4>({{count_read}})</h4></div>
+    <div class="col-md-6 offset-md-3 col-12 p-2">
+        
+            <div class="card">
+             <div class="card-header"><b>{{ teacher.first_name }} {{ teacher.last_name }}</b> </div>
+             <div class="card-body">
+                {% if request.user.user_role == 'super' %}
+                <form method="post" >
+                    {% csrf_token %}
+                    <p><b>Username:</b> {{ teacher.username }}</p>
+                <p><b>Ism:</b> {{ teacher.first_name }}</p>
+                <p><b>Familiya:</b> {{ teacher.last_name }}</p>
+                <p><b>Umumiy maosh:</b> {{ count }}</p>
+                {% for data in all_grs %}
+                <p><b>{{data.group}}:</b> {{ data.count }}</p>
+                {% endfor %}
+                        <hr>
+                <div class="form-group mt-3">
+                    <label class="form-label" for="card">Naqt pul</label>
+                    <input required id="cash"  name="cash" type="number" placeholder="0" value="0" class="form-control">
+                </div> 
+
+                <div class="form-group mt-3">
+                    <label class="form-label" for="card">Karta</label>
+                    <input required name="card" id="card" type="number" placeholder="0" value="0" class="form-control">
+                </div> 
+
+                <div class="w-100 text-center mt-3"><button class="btn btn-warning ">To'lash</button></div>
+                </form>
+                {% else %}
+                <p><b>Username:</b> {{ teacher.username }}</p>
+                <p><b>Ism:</b> {{ teacher.first_name }}</p>
+                <p><b>Familiya:</b> {{ teacher.last_name }}</p>
+                <p><b>Umumiy maosh:</b> {{ count }}</p>
+                {% for data in all_grs %}
+                <p><b>{{data.group}}:</b> {{ data.count }}</p>
+                {% endfor %}
+                
+                {% endif %}
+                
+             </div>
+
+         </div>
+        
+     </div>
+    
+</div>
+
+
+
+{% if request.user.user_role == 'teacher' %}
+<div class="row my-4" >
+    <div class="col-12 p-3 my-2 text-center"><h4>Barcha to'lovlar</h4></div>
+    {% for payment in payments %}
+    {% if payment.success == True %}
+    <div class="col-md-3 p-2 ">
+       <a  >
+        <div class="card bg-light ">
+            <div class="card-header"><b>{{ payment.student.first_name }} {{ payment.student.last_name }}</b></div>
+            <div class="card-body">
+                <p><b>Username:</b> {{ payment.student.username }} <br>
+                <p><b>Guruh:</b> {{ payment.group }} <br>
+                <p><b>To'lov summasi:</b> {{ payment.count }} <br>
+                    <small>Karta:{{ payment.card }}</small> ||
+                    <small>Naqt pul:{{ payment.cash }}</small></p>
+
+                <p><b>Qarz: </b>{{ payment.dept_count }}</p>
+                <p><b>To'lov oyi: </b>{{ payment.month }}</p>
+                <p><b>To'lov sanasi: </b>{{ payment.pay_date }}</p>
+
+            </div>
+        </div>
+       </a>
+
+    </div>
+    {% endif %}
+    {% if payment.dept == True %}
+    <div class="col-md-3 p-2 ">
+       <a  >
+        <div class="card bg-danger text-white">
+            <div class="card-header"><b>{{ payment.student.first_name }} {{ payment.student.last_name }}</b></div>
+            <div class="card-body">
+                <p><b>Username:</b> {{ payment.student.username }} <br>
+                <p><b>Guruh:</b> {{ payment.group }} <br>
+                <p><b>To'lov summasi:</b> {{ payment.count }} <br>
+                    <small>Karta:{{ payment.card }}</small> ||
+                    <small>Naqt pul:{{ payment.cash }}</small></p>
+
+                <p><b>Qarz: </b>{{ payment.dept_count }}</p>
+                <p><b>To'lov oyi: </b>{{ payment.month }}</p>
+                <p><b>To'lov sanasi: </b>{{ payment.pay_date }}</p>
+
+            </div>
+        </div>
+       </a>
+
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% else %}
+<div class="row my-4" >
+    <div class="col-12 p-3 my-2 text-center"><h4>Barcha to'lovlar</h4></div>
+    {% for payment in payments %}
+    {% if payment.success == True %}
+    <div class="col-md-3 p-2 ">
+       <a href="{% url 'payment_edit' payment.id %}" >
+        <div class="card bg-light ">
+            <div class="card-header"><b>{{ payment.student.first_name }} {{ payment.student.last_name }}</b></div>
+            <div class="card-body">
+                <p><b>Username:</b> {{ payment.student.username }} <br>
+                <p><b>Guruh:</b> {{ payment.group }} <br>
+                <p><b>To'lov summasi:</b> {{ payment.count }} <br>
+                    <small>Karta:{{ payment.card }}</small> ||
+                    <small>Naqt pul:{{ payment.cash }}</small></p>
+
+                <p><b>Qarz: </b>{{ payment.dept_count }}</p>
+                <p><b>To'lov oyi: </b>{{ payment.month }}</p>
+                <p><b>To'lov sanasi: </b>{{ payment.pay_date }}</p>
+
+            </div>
+        </div>
+       </a>
+
+    </div>
+    {% endif %}
+    {% if payment.dept == True %}
+    <div class="col-md-3 p-2 ">
+       <a href="{% url 'payment_edit' payment.id %}" >
+        <div class="card bg-danger text-white">
+            <div class="card-header"><b>{{ payment.student.first_name }} {{ payment.student.last_name }}</b></div>
+            <div class="card-body">
+                <p><b>Username:</b> {{ payment.student.username }} <br>
+                <p><b>Guruh:</b> {{ payment.group }} <br>
+                <p><b>To'lov summasi:</b> {{ payment.count }} <br>
+                    <small>Karta:{{ payment.card }}</small> ||
+                    <small>Naqt pul:{{ payment.cash }}</small></p>
+
+                <p><b>Qarz: </b>{{ payment.dept_count }}</p>
+                <p><b>To'lov oyi: </b>{{ payment.month }}</p>
+                <p><b>To'lov sanasi: </b>{{ payment.pay_date }}</p>
+
+            </div>
+        </div>
+       </a>
+
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock content %}
+
+
+
+

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}
+Guruhlar
+{% endblock title %}
+
+{% block content %}
+
+<div class="row mt-4">
+    <div class="col-12 text-center"><h3>Guruhlar</h3></div>
+    {% for group in groups %}
+    <div class="col-6 p-2 col-md-3">
+        <a href="{% url 'group_detail' group.id %}" >
+            <div class="card">
+                <div class="card-header"><h5>{{ group.name }}</h5></div>
+                <div class="card-body">
+                    <p><b>Nomi</b>: {{ group.name }}</p>
+                    <p><b>Narx</b>: {{ group.pay }} so'm</p>
+                    <p><b>Kunlar</b>: {{ group.day }}</p>
+                    <p><b>Boshlanish vaqti</b>: {{ group.hour }}.{% if group.minut == 0 %}00{% else %}{{ group.minut }}{% endif %}</p>
+                    <p><b>O'qituvchi</b>: {{ group.teacher.first_name }} {{ group.teacher.last_name }}</p>
+                    
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+
+
+
+{% endblock content %}
+

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Berilgan oyliklar
+{% endblock title %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="mt-3 col-12 text-center"><h4>Berilgan oyliklar</h4></div>
+    {% for salary in salaries %}
+        <div class=" col-md-3 p-2 col-6">
+            <div class="card">
+                <div class="card-header"><b> {{ salary.teacher.first_name }} {{ salary.teacher.last_name }}</b></div>
+                <div class="card-body">
+                    <p><b>Yil:</b> {{ salary.year }}</p>
+                    <p><b>Oy:</b>  {{ salary.month }}</p>
+                    <p><b>Umumiy:</b>  {{ salary.count }} so'm</p>
+                    <p><b>Naqt pul:</b> {{ salary.cash }}</p>
+                    <p><b>Karta:</b> {{ salary.card }}</p>
+
+                </div>
+                <div class="card-footer">{{ salary.created_date }}</div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock content %}

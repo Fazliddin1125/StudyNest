@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}
+Barcha to'lovlar
+{% endblock title %}
+{%  block content %}
+<div class="row mt-4" >
+    <div class="col-12 p-3 my-2 text-center"><h4>Barcha to'lovlar</h4></div>
+    {% for payment in payments %}
+    {% if payment.success == True %}
+    <div class="col-md-3 p-2 ">
+       <a href="{% url 'payment_edit' payment.id %}" >
+        <div class="card bg-light ">
+            <div class="card-header"><b>{{ payment.student.first_name }} {{ payment.student.last_name }}</b></div>
+            <div class="card-body">
+                <p><b>Username:</b> {{ payment.student.username }} <br>
+                <p><b>Guruh:</b> {{ payment.group }} <br>
+                <p><b>To'lov summasi:</b> {{ payment.count }} <br>
+                    <small>Karta:{{ payment.card }}</small> ||
+                    <small>Naqt pul:{{ payment.cash }}</small></p>
+
+                <p><b>Qarz: </b>{{ payment.dept_count }}</p>
+                <p><b>To'lov oyi: </b>{{ payment.month }}</p>
+                <p><b>To'lov sanasi: </b>{{ payment.pay_date }}</p>
+
+            </div>
+        </div>
+       </a>
+
+    </div>
+    {% endif %}
+    {% if payment.dept == True %}
+    <div class="col-md-3 p-2 ">
+       <a href="{% url 'payment_edit' payment.id %}" >
+        <div class="card bg-danger text-white">
+            <div class="card-header"><b>{{ payment.student.first_name }} {{ payment.student.last_name }}</b></div>
+            <div class="card-body">
+                <p><b>Username:</b> {{ payment.student.username }} <br>
+                <p><b>Guruh:</b> {{ payment.group }} <br>
+                <p><b>To'lov summasi:</b> {{ payment.count }} <br>
+                    <small>Karta:{{ payment.card }}</small> ||
+                    <small>Naqt pul:{{ payment.cash }}</small></p>
+
+                <p><b>Qarz: </b>{{ payment.dept_count }}</p>
+                <p><b>To'lov oyi: </b>{{ payment.month }}</p>
+                <p><b>To'lov sanasi: </b>{{ payment.pay_date }}</p>
+
+            </div>
+        </div>
+       </a>
+
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{%  endblock content %}

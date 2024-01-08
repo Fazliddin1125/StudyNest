@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block title %}Index{% endblock title %}
+{% block content %}
+
+<div class="row py-4  mt-4">
+    <div class="col-md-2  ">
+        <a href="{% url 'lids_list' %}" style="cursor: pointer;" >
+            <div class="card text-center">
+            
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-person-fill-add  "></i></div>
+                    <div class="w-100   mt-1" >Faol lidlar</div>
+                    <div class="w-100  mt-1 " >{{ len_lid }}</div>
+                </div>
+            </div> 
+        </a>       
+    </div>
+
+    <div class="col-md-2  ">
+        <a href="{% url 'students_list' %}" style="cursor: pointer; text-decoration: none;" >
+            <div class="card text-center">
+            
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-person-fill-check"></i></div>
+                    <div class="w-100   mt-1" >Faol talabalar</div>
+                    <div class="w-100  mt-1 " >{{ act_len }}</div>
+                </div>
+            </div> 
+        </a>       
+    </div>
+
+    <div class="col-md-2  ">
+        <a href="{% url 'dept_list' %}" style="cursor: pointer;" >
+            <div class="card text-center">
+            
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-person-fill-dash"></i></div>
+                    <div class="w-100   mt-1" >Qarzdorlar</div>
+                    <div class="w-100  mt-1 " >{{ len_dep }}</div>
+                </div>
+            </div> 
+        </a>       
+    </div>
+    <div class="col-md-2  ">
+
+        <a href="{% url 'teachers' %}" style="cursor: pointer;" >
+            <div class="card pt-3 pb-2 text-center">
+            
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-wallet2"></i></div>
+                    <div class="w-100   mt-1" >Oylik maoshlar</div>
+
+
+                </div>
+            </div> 
+        </a>       
+    </div>
+    <div class="col-md-2  ">
+        <a href="{% url 'spending' %}" style="cursor: pointer;" >
+            <div class="card pt-3 pb-2 text-center">
+            
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-cash-coin"></i></div>
+                    <div class="w-100   mt-1" >Xarajatlar</div>
+
+                </div>
+            </div> 
+        </a>       
+    </div>
+    
+
+
+    {% if request.user.user_role == 'super' %}
+    <div class="col-md-2 ">
+        <a href="{% url 'statistics' %}" style="cursor: pointer;" >
+            <div class="card pt-3 pb-2 text-center">
+
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-clipboard2-data-fill"></i></div>
+                    <div class="w-100   mt-1" >Statistika</div>
+
+                </div>
+            </div>
+        </a>
+    </div>
+   
+    {% else %}
+    <div class="col-md-2 ">
+        <a  style="cursor: pointer;" >
+            <div class="card pt-3 pb-2 text-center">
+
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-clipboard2-data-fill"></i></div>
+                    <div class="w-100   mt-1" >Statistika</div>
+
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    <div class="col-md-2 mt-4 ">
+        <a href="{% url 'groups' %}" style="cursor: pointer;" >
+            <div class="card pt-3 pb-2 text-center">
+
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-stack"></i></div>
+                    <div class="w-100   mt-1" >Guruhlar</div>
+
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-2 mt-4">
+        <a href="{% url 'payments' %}" style="cursor: pointer;" >
+            <div class="card pt-3 pb-2 text-center">
+
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-cash-stack"></i></div>
+                    <div class="w-100   mt-1" >To'lovlar</div>
+
+                </div>
+            </div>
+        </a>
+    </div>
+    {% if request.user.user_role == 'super' %}
+    <div class="col-md-2 mt-4">
+        <a href="{% url 'given_salary' %}" style="cursor: pointer;" >
+            <div class="card pt-3 pb-2 text-center">
+
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-cash-stack"></i></div>
+                    <div class="w-100   mt-1" >Berilgan maoshlar</div>
+
+                </div>
+            </div>
+        </a>
+    </div>
+    {% endif %}
+    
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}Xarajatlar
+{% endblock title %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-6 offset-3 p-2">
+        <div class="card">
+            <div class="card-header">Xarajat</div>
+            <div class="card-body">
+                <form method="post" >
+                    {% csrf_token %}
+                    <div class="d-flex" >
+
+                        <div class="col w-50  p-1 " >
+                             <label for="cash" >Naqt pul</label>
+                            <input required id="cash" type="number" value="0" min="0" class="form-control"  name="cash"  >
+                        </div>
+                        <div class="col w-50 p-1 " >
+                             <label for="card" >Karta</label>
+                        <input required value="0" id="card" min="0" type="number" class="form-control"  name="card"  >
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="kind" class="form-label">Xarajat Turi</label>
+                      <select name="kind" class="form-select" id="kind" aria-label="Default select example">
+                          {% for kind in kinds %}
+                              <option value="{{kind.name}}">{{ kind.name }}</option>
+                          {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="comment" class="form-label">Comment</label>
+                      <textarea name="comment" class="form-control" id="comment" rows="3"></textarea>
+                    </div>
+                     
+          
+          
+                      <button class="btn btn-primary" type="submit" >Yuborish</button>
+                  </form>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+{% if request.user.user_role == 'super' %}
+<div class="row mt-4">
+    <div class="mt-3 col-12 text-center"><h4>Xarajatlar</h4></div>
+    {% for spending in spendings %}
+        <div class=" col-md-3 p-2 col-6">
+            <div class="card">
+                <div class="card-header"><b> {{ spending.user.first_name }} {{ spending.user.last_name }}</b></div>
+                <div class="card-body">
+                    <p><b>Xarajat Turi:</b> {{ spending.for_smt }}</p>
+                    <p><b>Kamment:</b>  {{ spending.camment }}</p>
+                    <p><b>Umumiy:</b>  {{ spending.count }} so'm</p>
+                    <p><b>Naqt pul:</b> {{ spending.cash }}</p>
+                    <p><b>Karta:</b> {{ spending.card }}</p>
+
+                </div>
+                <div class="card-footer">
+                    {{ spending.created_date }}
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% endblock content %}

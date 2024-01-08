@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %}IndexT{% endblock title %}
+{% block content %}
+
+
+
+<div class="row mt-4">
+    <div class="col-md-2 mt-4  ">
+
+        <a href="{% url 'teachers' %}" style="cursor: pointer;" >
+            <div class="card pt-3 pb-2 text-center">
+            
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-wallet2"></i></div>
+                    <div class="w-100   mt-1" >Oylik maoshlar</div>
+
+
+                </div>
+            </div> 
+        </a>       
+    </div>
+    
+    <div class="col-md-2 mt-4 ">
+        <a href="{% url 'groups' %}" style="cursor: pointer;" >
+            <div class="card pt-3 pb-2 text-center">
+
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-stack"></i></div>
+                    <div class="w-100   mt-1" >Guruhlar</div>
+
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-2 mt-4">
+        <a href="{% url 'payments' %}" style="cursor: pointer;" >
+            <div class="card pt-3 pb-2 text-center">
+
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-cash-stack"></i></div>
+                    <div class="w-100   mt-1" >To'lovlar</div>
+
+                </div>
+            </div>
+        </a>
+    </div>
+   
+   
+    
+</div>
+
+
+{% endblock content %}

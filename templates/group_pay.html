@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock title %}
+
+{% block content %}
+
+<div class="row mt-4">
+    <div class="row mt-2 ">
+        <div class="col-12 my-3 text-center">
+            <h4>{{ group }} guruh talabalari <b>{{ year }}</b> yil <b>{{ month }}</b> oyi holatiga ko'ra to'lov jadvali
+            </h4>
+        </div>
+        <div class="col-12">
+            <table class="table ">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Ism Familiya</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">Telefon</th>
+
+                        <th scope="col">To'lov</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stp in st_py %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ stp.student.first_name }} {{ stp.student.last_name }}</td>
+                        <td>{{ stp.student.username }}</td>
+                        <td>{{ stp.student.phone_number }}</td>
+                        {% if stp.payment %}
+                        <td>{{ stp.payment.count }}</td>
+                        {% else %}
+                        <td>
+                            <a style="text-decoration: none;" href="{% url 'payment' stp.student.username %}" class=""><i class="bi bi-currency-dollar"></i></a>
+                        </td>
+                        {% endif %}
+
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row py-2 mt-2">
+    <div class="col-4 ">
+        <form class="d-flex" method="get">
+            <select name="year" class="form-control">
+                <option> {{ now_year }} </option>
+                {% for year in years %}
+                <option value="{{ year }}">{{ year }}</option>
+                {% endfor %}
+            </select>
+            <select class="form-control mx-2" name="month">
+                {% for month in months %}
+                <option value="{{ month }}">{{ month }}</option>
+                {% endfor %}
+            </select>
+            <button class="btn btn-primary">Saralash</button>
+        </form>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="mt-4 col-12 p-2 text-center" ><h4>{{ group }} guruhi barcha to'lovlari</h4></div>
+    {% for payment in payments %}
+    <div class="col-3 p-2">
+       <a href="{% url 'payment_edit' payment.id %}" >
+        <div class="card">
+            <div class="card-header">{{ payment.student.first_name }} {{ payment.student.last_name }}</div>
+            <div class="card-body">
+                <p><b>To'lov summasi:</b> {{ payment.count }} <br> 
+                    <small>Karta:{{ payment.card }}</small> ||
+                    <small>Naqt pul:{{ payment.cash }}</small></p>
+
+                <p><b>To'lov oyi: </b>{{ payment.month }}</p>
+                <p><b>To'lov sanasi: </b>{{ payment.pay_date }}</p>
+
+            </div>
+        </div>
+       </a>
+
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}
