@@ -3,7 +3,9 @@ from .views import IndexView, PaymentView, PaymentDetailView,\
     StudentsView, LidsView, TestView, DeptView, TeacherView, \
     SalaryCalculateView, SpendingView, GroupStudentView, \
     EditPasswordView, AllGroupsView, GroupDetailView, GroupPayment, \
-    AllPayments, StaticticsView, GivenSalaryListView
+    AllPayments, StaticticsView, GivenSalaryListView, AttendanceView, \
+    AttendanceHistoryView, RemoveStudentView, AddGroupStudent, CreateGroupView, DeleteStudentView, \
+    SettingGroupView, PaymentDeleteView
 
 urlpatterns = [
     path('', IndexView.as_view(), name='index'),
@@ -24,5 +26,12 @@ urlpatterns = [
     path('group/<int:group_id>/<int:year>/<slug:month>/', GroupPayment.as_view(), name='group_pay'),
     path('payments/', AllPayments.as_view(), name='payments'),
     path('g-salary/', GivenSalaryListView.as_view(), name='given_salary'),
-
+    path('attendance/<int:group_id>/', AttendanceView.as_view(), name='attendance'),
+    path('attendance/history/<int:group_id>/', AttendanceHistoryView.as_view(), name='attendance_history'),
+    path('remove/<slug:username>/<int:group_id>/', RemoveStudentView.as_view(), name='remove'),
+    path('add/<int:group_id>/', AddGroupStudent.as_view(), name='add_student_group'),
+    path('create/group/', CreateGroupView.as_view(), name='create_group'),
+    path('delete/<slug:username>/', DeleteStudentView.as_view(), name='delete_student'),
+    path('delete/payment/<int:payment_id>', PaymentDeleteView.as_view(), name='delete_payment'),
+    path('setting/<int:group_id>/<slug:username>/', SettingGroupView.as_view(), name='setting_group'),
 ]

@@ -4,8 +4,10 @@ from django.shortcuts import render, get_object_or_404, get_list_or_404, redirec
 from django.urls import reverse
 from django.views import View
 from users.models import CustomUser
-from .models import Group, GroupStudent, Payment, Money, Spending, KindOfSpending, GivenSalary
+from .models import Group, GroupStudent, Payment, Money, Spending, \
+    KindOfSpending, GivenSalary, Attendance, AttendanceStudent, Days, Course
 from datetime import datetime
+
 from django.contrib import messages
 from .utilits import readnumber
 
@@ -41,9 +43,12 @@ class PaymentView(LoginRequiredMixin, View):
         if request.user.user_role == 'super' or request.user.user_role == 'admin':
             user = CustomUser.objects.get(username=username)
             groups = user.groupstudent_set.all
+            group_students = GroupStudent.objects.filter(student=user)
+
             context = {
                 'user': user,
-                'groups': groups
+                'groups': groups,
+                'group_students': group_students
             }
             return render(request, 'payment.html', context)
         else:
@@ -92,7 +97,26 @@ class PaymentView(LoginRequiredMixin, View):
                 messages.warning(request, f"{user.first_name} {user.last_name} allaqachon {month} oyi uchun to'lovni amalga oshirgan")
                 return render(request, 'payment.html', context)
 
-        if group.pay > count:
+        group_student = get_object_or_404(GroupStudent, student=user, group=group)
+        sale = group_student.sale
+
+        sale_count = group_student.count
+        if sale:
+            if sale_count <= count:
+                success = True
+                dept = False
+                dept_count = 0
+                user.is_pay = True
+                user.dept = False
+                user.dept_count = dept_count
+            else:
+                success = False
+                dept = True
+                dept_count = sale_count - count
+                user.is_pay = False
+                user.dept = True
+                user.dept_count = dept_count
+        elif group.pay > count:
             success = False
             dept = True
             dept_count = group.pay - count
@@ -141,9 +165,12 @@ class PaymentDetailView(LoginRequiredMixin, View):
             if Payment.objects.get(id=payment_id):
                 payment = Payment.objects.get(id=payment_id)
                 groups = payment.student.groupstudent_set.all
+                user = payment.student
+                group_students = GroupStudent.objects.filter(student=user)
                 context = {
                     'payment': payment,
                     'groups': groups,
+                    'group_students': group_students
                 }
                 return render(request, 'payment_edit.html', context)
             else:
@@ -195,7 +222,25 @@ class PaymentDetailView(LoginRequiredMixin, View):
             card_money = Money.objects.get(id=2)
             cash_money = Money.objects.get(id=3)
 
-            if group.pay > count:
+            group_student = get_object_or_404(GroupStudent, student=user, group=group)
+            sale = group_student.sale
+            sale_count = group_student.count
+            if sale:
+                if sale_count <= count:
+                    success = True
+                    dept = False
+                    dept_count = 0
+                    user.is_pay = True
+                    user.dept = False
+                    user.dept_count = dept_count
+                else:
+                    success = False
+                    dept = True
+                    dept_count = sale_count - count
+                    user.is_pay = False
+                    user.dept = True
+                    user.dept_count = dept_count
+            elif group.pay > count:
                 success = False
                 dept = True
                 dept_count = group.pay - count
@@ -401,17 +446,29 @@ class SalaryCalculateView(View):
 
             for group in groups:
                 gr_count = 0
+
+
                 for group_student in group.groupstudent_set.all():
                     # print(group_student)
-
+                    sale = group_student.sale
+                    is_sale = group_student.is_sale
                     student = group_student.student
 
                     payments = student.payment_set.filter(month=month, group=group, year=year)
 
                     for payment in payments:
                         all_payments.append(payment)
-                        gr_count = gr_count + (payment.count*group.percentage/100)
-                        count = count + (payment.count*group.percentage/100)
+                        if sale == True:
+                            if is_sale == True:
+                                pay_count = group.pay
+                                gr_count = gr_count + (pay_count * group.percentage / 100)
+                                count = count + (pay_count * group.percentage / 100)
+                            else:
+                                gr_count = gr_count + (payment.count * group.percentage / 100)
+                                count = count + (payment.count * group.percentage / 100)
+                        else:
+                            gr_count = gr_count + (payment.count * group.percentage / 100)
+                            count = count + (payment.count * group.percentage / 100)
                 group_salary = {
                     'group': group,
                     'count': int(gr_count),
@@ -654,7 +711,8 @@ class GroupDetailView(View):
 
             students = []
             for student in students_gr:
-                students.append(student.student)
+                if student.student.user_type == 'active':
+                    students.append(student.student)
             payments = Payment.objects.filter(group=group).order_by('-pay_date')
             context = {
                 'group': group,
@@ -701,7 +759,8 @@ class GroupDetailView(View):
 
             students = []
             for student in students_gr:
-                students.append(student.student)
+                if student.student.user_type == 'active':
+                    students.append(student.student)
             payments = Payment.objects.filter(group=group).order_by('-pay_date')
             context = {
                 'group': group,
@@ -747,25 +806,31 @@ class GroupPayment(View):
             for student in students_gr:
                 students.append(student.student)
             payments = Payment.objects.filter(year=year, month=month, group=group)
-            if not payments:
-                messages.warning(request, f"{year} { month } oyi uchun to'lovlar mavjud emas")
-                return render(request, '404.html')
+
             st_py = []
             for student in students:
                 is_have = False
-                for payment in payments:
-                    if payment.student.id == student.id:
-                        is_have = True
-                        break
-                    else:
-                        payment = None
+                group_student = get_object_or_404(GroupStudent, student=student, group=group)
+                sale = group_student.sale
+                is_sale = group_student.is_sale
+                sale_count = group_student.count
+                if payments:
+                    for payment in payments:
+                        if payment.student.id == student.id:
+                            is_have = True
+                            break
+                        else:
+                            payment = None
+                else:
+                    payment = None
                 st_py.append(
                     {
                         'student': student,
                         'is_pay': is_have,
                         'payment': payment,
-
-
+                        'sale': sale,
+                        'is_sale': is_sale,
+                        'sale_count': sale_count
                     }
                 )
 
@@ -956,6 +1021,358 @@ class GivenSalaryListView(LoginRequiredMixin, View):
             return render(request, '404.html')
 
 
+class AttendanceView(View):
+    def get(self, request, group_id):
+        group = get_object_or_404(Group, id=group_id)
+        teacher = group.teacher
+        if request.user == teacher or request.user.user_role == 'super':
+            students = []
+            group_students = group.groupstudent_set.all()
+            for group_student in group_students:
+                if group_student.student.user_type == 'active':
+                    students.append(group_student.student)
+
+        else:
+            pass
+
+        context = {
+            'group': group,
+            'students': students
+        }
+        return render(request, 'attendance.html', context)
+
+    def post(self, request, group_id):
+        months = [
+            "Yanvar",
+            "Fevral",
+            "Mart",
+            "Aprel",
+            "May",
+            "Iyun",
+            "Iyul",
+            "Avgust",
+            "Sentabr",
+            "Oktabr",
+            "Noyabr",
+            "Dekabr",
+        ]
+        group = get_object_or_404(Group, id=group_id)
+        teacher = group.teacher
+        if request.user == teacher or request.user.user_role == 'super':
+            try:
+                date = request.POST['date']
+                date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+            except Exception as e:
+                messages.warning(request, f"Davomat sanasini kiritish majburiy !")
+                return redirect('attendance', group_id)
+
+
+            if Attendance.objects.filter(group=group, day=date_obj.day, year=date_obj.year, month=months[date_obj.month-1]):
+                messages.warning(request, f"{date}. {group} guruhi uchun allaqachon davomat olingan")
+                return redirect('attendance', group_id)
+            attendance = Attendance.objects.create(
+                group=group,
+                day=date_obj.day,
+                year=date_obj.year,
+                month=months[date_obj.month-1],
+
+            )
+            students = []
+            group_students = group.groupstudent_set.all()
+            for group_student in group_students:
+                if group_student.student.user_type == 'active':
+                    students.append(group_student.student)
+
+            count = 0
+            for student in students:
+                try:
+                    on_off = request.POST.get(f"student_{student.username}")
+                    print(request.POST.get(f"student_{student.username}"))
+                    if on_off == 'on':
+                        nb = True
+                        count = count + 1
+                    else:
+                        nb = False
+                except Exception as e:
+                    messages.error(request, f"{e}")
+                attendance_student = AttendanceStudent.objects.create(
+                    student=student,
+                    attendance=attendance,
+                    nb=nb
+                )
+                attendance_student.save()
+            percentage = count/len(students)*100
+            attendance.percentage = percentage
+            attendance.save()
+
+            messages.info(request, f"{date} uchun davomat qabul qilindi")
+            return redirect('index')
+
+class AttendanceHistoryView(View):
+    def get(self, request, group_id):
+        group = get_object_or_404(Group, id=group_id)
+        teacher = group.teacher
+        if request.user == teacher or request.user.user_role == 'super' or request.user.user_role == 'admin':
+            attendance = Attendance.objects.filter(group=group).order_by('-created_date')
+            context = {
+                'attendance': attendance
+            }
+
+            return render(request, 'att_history.html', context)
+        else:
+            messages.warning(request, 'Sizga ushbu amal uchun admin tomonidan ruxsat berilamagan.')
+            return render(request, '404.html')
+
+class AttendanceEditView(View):
+    def get(self, request, attend_id):
+        attend = get_object_or_404(Attendance, id=attend_id)
+        teacher = attend.group.teacher
+        group = attend.group
+        if request.user == teacher or request.user.user_role == 'super':
+            att_students = AttendanceStudent.objects.filter(attendance=attend)
 
 
 
+        else:
+            pass
+
+        context = {
+            'group': group,
+            'att_students': att_students
+        }
+        return render(request, 'attendance_edit.html', context)
+
+    def post(self, request, attend_id):
+        months = [
+            "Yanvar",
+            "Fevral",
+            "Mart",
+            "Aprel",
+            "May",
+            "Iyun",
+            "Iyul",
+            "Avgust",
+            "Sentabr",
+            "Oktabr",
+            "Noyabr",
+            "Dekabr",
+        ]
+        attend = get_object_or_404(Attendance, id=attend_id)
+        group = attend.group
+        teacher = group.teacher
+        if request.user == teacher or request.user.user_role == 'super':
+            date = request.POST['date']
+            date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+            attendance = Attendance.objects.create(
+                group=group,
+                day=date_obj.day,
+                year=date_obj.year,
+                month=months[date_obj.month - 1],
+
+            )
+            students = []
+            group_students = group.groupstudent_set.all()
+            for group_student in group_students:
+                if group_student.student.user_type == 'active':
+                    students.append(group_student.student)
+
+            count = 0
+            for student in students:
+                try:
+                    on_off = request.POST.get(f"student_{student.username}")
+                    if on_off == 'on':
+                        nb = True
+                        count = count + 1
+                    else:
+                        nb = False
+                except Exception as e:
+                    messages.error(request, f"{e}")
+
+            percentage = count / len(students) * 100
+            attendance.percentage = percentage
+            attendance.save()
+
+            messages.info(request, f"{date} uchun davomat qabul qilindi")
+            return redirect('index')
+
+class RemoveStudentView(View):
+    def get(self, request, username, group_id):
+        student = get_object_or_404(CustomUser, username=username, user_role='student')
+        group = get_object_or_404(Group, id=group_id)
+        if request.user == group.teacher or request.user.user_role == 'admin' or request.user.user_role == 'super':
+            if Payment.objects.filter(student=student, group=group):
+                student.user_type = 'deleted'
+                student.save()
+                messages.success(request, f"{student.first_name} {student.last_name} guruhdan chetlashtirildi !")
+                return redirect('group_detail', group_id)
+            elif GroupStudent.objects.filter(group=group, student=student):
+                grst = get_object_or_404(GroupStudent, group=group, student=student)
+                grst.delete()
+                student.user_type = 'pause'
+                student.save()
+                messages.success(request, f"{student.first_name} {student.last_name} guruhdan chetlashtirildi !")
+                return redirect('group_detail', group_id)
+            else:
+                messages.warning(request, f'xato')
+                return redirect('group_detail', group_id)
+        else:
+            return redirect('index')
+
+
+class AddGroupStudent(View):
+    def get(self, request, group_id):
+        group = get_object_or_404(Group, id=group_id)
+        context = {
+            'group': group
+        }
+        return render(request, 'addstudentbyteacher.html', context)
+    def post(self, request, group_id):
+        group = get_object_or_404(Group, id=group_id)
+        if request.user == group.teacher or request.user.user_role == 'admin' or request.user.user_role == 'super':
+            try:
+                first_name = request.POST['first_name']
+                last_name = request.POST['last_name']
+                phone_number = request.POST['phone_number']
+                phone_number2 = request.POST['phone_number2']
+            except Exception as e:
+                messages.warning(request, 'Xatolik mavjud')
+
+            student = CustomUser.objects.create(
+                group=group,
+                first_name=first_name,
+                last_name=last_name,
+
+                phone_number=phone_number,
+                phone_number2=phone_number2,
+                user_type='active',
+                user_role='student'
+            )
+            student.save()
+            add_gr = GroupStudent.objects.create(student=student, group=group)
+            add_gr.save()
+        messages.success(request, f"{student.first_name} {student.last_name} {group.name}ga qo'shildi.")
+        return redirect('group_detail', group_id)
+
+
+class CreateGroupView(View):
+    def get(self, request):
+        if request.user.user_role == 'admin' or request.user.user_role == 'super':
+            teachers = CustomUser.objects.filter(user_role='teacher')
+            days = Days.objects.all()
+            course = Course.objects.all()
+            context = {
+                'teachers': teachers,
+                'days': days,
+                'course': course
+            }
+            return render(request, 'create_group.html', context)
+        else:
+            messages.warning(request, 'Sizga ushbu amal uchun admin tomonidan ruxsta berilmagan')
+            return redirect('index')
+    def post(self, request):
+        teacher_id = request.POST['teacher']
+        name = request.POST['name']
+        course_id = request.POST['course']
+        price = request.POST['price']
+        percentage = request.POST['percentage']
+        hour = request.POST['hour']
+        minute = request.POST['minute']
+        day_id = request.POST['day']
+        teacher = get_object_or_404(CustomUser, id=teacher_id, user_role='teacher')
+        course = get_object_or_404(Course, id=course_id)
+        day = get_object_or_404(Days, id=day_id)
+
+        group = Group.objects.create(
+            name=name,
+            pay=price,
+            teacher=teacher,
+            day=day,
+            hour=hour,
+            minut=minute,
+            course=course,
+            type=True,
+            percentage=percentage
+        )
+
+        group.save()
+        messages.success(request, f"{name} guruhi yaratildi!")
+        return redirect('index')
+
+
+class DeleteStudentView(View):
+    def get(self, request, username):
+        if request.user.user_role == 'admin' or request.user.user_role == 'super':
+            student = get_object_or_404(CustomUser, username=username, user_role='student')
+            student.delete()
+        return redirect('lids_list')
+
+class SettingGroupView(View):
+    def get(self, request, group_id, username):
+        if request.user.user_role == 'admin' or request.user.user_role == 'super':
+            group = get_object_or_404(Group, id=group_id)
+            student = get_object_or_404(CustomUser, username=username)
+            group_student = get_object_or_404(GroupStudent, group=group, student=student)
+            is_sale = group_student.is_sale
+            sale = group_student.sale
+            count = group_student.count
+            context = {
+                'is_sale': is_sale,
+                'sale': sale,
+                'count': count,
+                'student': student,
+                'group': group
+            }
+            return render(request, 'group_setting.html', context)
+        else:
+            messages.warning(request, "Sizga ushbu amal uchun ruxsat berilmagan")
+            return redirect('index')
+    def post(self, request, group_id, username):
+        if request.user.user_role == 'admin' or request.user.user_role == 'super':
+            group = get_object_or_404(Group, id=group_id)
+            student = get_object_or_404(CustomUser, username=username, user_role='student')
+            group_student = get_object_or_404(GroupStudent, group=group, student=student)
+            is_sale_1 = request.POST.get('is_sale')
+            sale_1 = request.POST.get('sale')
+            if is_sale_1 == 'on':
+                is_sale = True
+            else:
+                is_sale = False
+            if sale_1 == 'on':
+                sale = True
+            else:
+                sale = False
+            count = int(request.POST['count'])
+            group_student.is_sale = is_sale
+            group_student.sale = sale
+            group_student.count = count
+            group_student.save()
+
+            messages.success(request, 'Chegirma qabul qilindi.')
+            return redirect('group_detail', group_id)
+        else:
+            messages.warning(request, "Sizga ushbu amal uchun ruxsat berilmagan")
+            return redirect('index')
+
+class PaymentDeleteView(View):
+    def get(self, request, payment_id):
+        if request.user.user_role == 'super':
+            paymet = get_object_or_404(Payment, id=int(payment_id))
+            all_money = Money.objects.get(id=1)
+            all_card = Money.objects.get(id=2)
+            all_cash = Money.objects.get(id=3)
+
+            all_money.count = all_money.count - paymet.count
+            all_card.count = all_card.count - paymet.card
+            all_cash.count = all_cash.count - paymet.cash
+
+            all_money.save()
+            all_card.save()
+            all_cash.save()
+            paymet.delete()
+            messages.success(request, f"To'lov o'chirildi")
+            return redirect('payments')
+
+
+        else:
+            messages.success(request, f"Faqat super admin kirishi mumkin")
+            return render(request, '404.html')

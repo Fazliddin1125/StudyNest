@@ -42,12 +42,17 @@ class Group(models.Model):
     percentage = models.IntegerField(default=50)
 
 
+
     def __str__(self):
         return self.name
 
 class GroupStudent(models.Model):
     student = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    is_sale = models.BooleanField(default=False)
+    sale = models.BooleanField(default=False)
+    count = models.IntegerField(default=0)
+    teacher_count = models.IntegerField(default=0)
     arrival_day = models.DateField(auto_now_add=True)
     started_day = models.DateField(null=True, blank=True)
     pay_for = models.FloatField(default=0, null=True, blank=True)
@@ -175,6 +180,46 @@ class Report(models.Model):
 
     def __str__(self):
         return self.month
+
+class Attendance(models.Model):
+    MONTHS_CHOICES = (
+        ("Yanvar", 'yanvar'),
+        ("Fevral", 'fevral'),
+        ("Mart", 'mart'),
+        ("Aprel", 'aprel'),
+        ("May", 'may'),
+        ("Iyun", 'iyun'),
+        ("Iyul", 'iyul'),
+        ("Avgust", 'avgust'),
+        ("Sentabr", 'sentabr'),
+        ("Oktabr", 'oktabr'),
+        ("Noyabr", 'noyabr'),
+        ("Dekabr", 'dekabr'),
+    )
+
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    day = models.IntegerField()
+    year = models.IntegerField()
+    month = models.CharField(max_length=20, choices=MONTHS_CHOICES)
+    created_date = models.DateTimeField(auto_now_add=True)
+    percentage = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ['group', 'day', 'month', 'year']
+    def __str__(self):
+        return f"{self.group}--{self.day}"
+
+class AttendanceStudent(models.Model):
+    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    attendance = models.ForeignKey(Attendance, on_delete=models.CASCADE)
+    nb = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ['student', 'attendance']
+    def __str__(self):
+        return f"{self.student.first_name}--{self.attendance}"
+
+
 
 
 

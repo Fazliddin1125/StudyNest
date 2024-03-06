@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Davomat {{ group.name }}
+{% endblock title %}
+
+{% block content %}
+{{ group }}
+<form method="post" >
+    <div class="card p-3 m-4 " >
+    <div class="card-header" >{{ group.name }}</div>
+    <div class="card-header" >
+        <input type="date"  name="date" class="form-control w-50 my-4" required>
+         <div class="col-12">
+        <table class="table ">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Ism Familiya</th>
+                <th scope="col">Username</th>
+                <th scope="col">Telefon</th>
+                <th class="text-center" scope="col">Davomat</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for teacher in students %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ teacher.first_name }} {{ teacher.last_name }}</td>
+                <td>{{ teacher.username }} </td>
+                <td>{{ teacher.phone_number }}</td>
+                <td class="text-center" ><input value="on" id="student-{{ teacher.username }}"  name="student_{{ teacher.username }}" class="radio" checked type="checkbox" ></td>
+             {% endfor %}
+
+            </tbody>
+          </table>
+    </div>
+        {% for student in students %}
+        {% csrf_token %}
+
+{% endfor %}
+        <div class="w-100 text-center " >
+
+        <button  class="btn btn-primary" type="submit">Yuborish</button>
+        </div>
+    </div>
+</div>
+
+</form>
+
+{% endblock content %}

@@ -20,8 +20,10 @@
                         <th scope="col">Ism Familiya</th>
                         <th scope="col">Username</th>
                         <th scope="col">Telefon</th>
+                        <th scope="col">Chegirma</th>
+                        <th scope="col">To'lov </th>
+                        <th scope="col">Holat </th>
 
-                        <th scope="col">To'lov</th>
 
                     </tr>
                 </thead>
@@ -32,12 +34,35 @@
                         <td>{{ stp.student.first_name }} {{ stp.student.last_name }}</td>
                         <td>{{ stp.student.username }}</td>
                         <td>{{ stp.student.phone_number }}</td>
+                        {% if stp.sale == True %}
+                        {% if stp.is_sale == True %}
+                        <td>{{ stp.sale_count }}/M.t</td>
+                        {% else %}
+                        <td>{{ stp.sale_count }}/O' va M.t</td>
+                        {% endif %}
+                        {% else %}
+
+                        <td>Mavjud emas</td>
+                        {% endif %}
                         {% if stp.payment %}
                         <td>{{ stp.payment.count }}</td>
                         {% else %}
                         <td>
                             <a style="text-decoration: none;" href="{% url 'payment' stp.student.username %}" class=""><i class="bi bi-currency-dollar"></i></a>
                         </td>
+                        {% endif %}
+                        {% if stp.sale == True %}
+                        {% if stp.payment.success == True %}
+                        <td>⚠️/✅</td>
+                        {% else %}
+                        <td>⚠️/❌</td>
+                        {% endif %}
+                        {% else %}
+                        {% if stp.payment.success == True %}
+                        <td>✅</td>
+                        {% else %}
+                        <td>❌</td>
+                        {% endif %}
                         {% endif %}
 
                     </tr>
@@ -66,26 +91,59 @@
         </form>
     </div>
 </div>
-<div class="row mt-4">
-    <div class="mt-4 col-12 p-2 text-center" ><h4>{{ group }} guruhi barcha to'lovlari</h4></div>
+<div class="row mt-4" >
+    <div class="col-12 p-3 my-2 text-center"><h4>Barcha to'lovlar</h4></div>
     {% for payment in payments %}
-    <div class="col-3 p-2">
-       <a href="{% url 'payment_edit' payment.id %}" >
-        <div class="card">
-            <div class="card-header">{{ payment.student.first_name }} {{ payment.student.last_name }}</div>
+    {% if payment.success == True %}
+    <div class="col-md-3 p-2 ">
+       <a class="text-dark" style="text-decoration: none" href="{% url 'payment_edit' payment.id %}" >
+        <div class="card bg-light ">
+            <div class="card-header"><b>{{ payment.student.first_name }} {{ payment.student.last_name }}</b></div>
             <div class="card-body">
-                <p><b>To'lov summasi:</b> {{ payment.count }} <br> 
+                <p><b>Username:</b> {{ payment.student.username }} <br>
+                <p><b>Guruh:</b> {{ payment.group }} <br>
+                <p><b>To'lov summasi:</b> {{ payment.count }} <br>
                     <small>Karta:{{ payment.card }}</small> ||
                     <small>Naqt pul:{{ payment.cash }}</small></p>
 
+                <p><b>Qarz: </b>{{ payment.dept_count }}</p>
                 <p><b>To'lov oyi: </b>{{ payment.month }}</p>
                 <p><b>To'lov sanasi: </b>{{ payment.pay_date }}</p>
 
+            </div>
+            <div class="card-footer" >
+               <a  style="text-decoration: none" href="{% url 'delete_payment' payment.id %}" ><button class="btn btn-warning" >O'chirish</button></a>
             </div>
         </div>
        </a>
 
     </div>
+    {% endif %}
+    {% if payment.dept == True %}
+    <div class="col-md-3 p-2 ">
+       <a class="text-white" style="text-decoration: none" href="{% url 'payment_edit' payment.id %}" >
+        <div class="card bg-danger text-white">
+            <div class="card-header"><b>{{ payment.student.first_name }} {{ payment.student.last_name }}</b></div>
+            <div class="card-body">
+                <p><b>Username:</b> {{ payment.student.username }} <br>
+                <p><b>Guruh:</b> {{ payment.group }} <br>
+                <p><b>To'lov summasi:</b> {{ payment.count }} <br>
+                    <small>Karta:{{ payment.card }}</small> ||
+                    <small>Naqt pul:{{ payment.cash }}</small></p>
+
+                <p><b>Qarz: </b>{{ payment.dept_count }}</p>
+                <p><b>To'lov oyi: </b>{{ payment.month }}</p>
+                <p><b>To'lov sanasi: </b>{{ payment.pay_date }}</p>
+
+            </div>
+            <div class="card-footer" >
+               <a style="text-decoration: none" href="{% url 'delete_payment' payment.id %}" ><button class="btn btn-warning" >O'chirish</button></a>
+            </div>
+        </div>
+       </a>
+
+    </div>
+    {% endif %}
     {% endfor %}
 </div>
 {% endblock content %}

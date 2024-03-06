@@ -24,9 +24,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-4$m$)mn4j#uk8r@d5c!76lji-rt22u22fcgypt#44zqitijd+y'
 # SECRET_KEY = config('SECRET_KET')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
-
-ALLOWED_HOSTS = ['studynest.uz', 'www.studynest.uz', 'localhost']
+# DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True
+ALLOWED_HOSTS = ['studynest.uz', 'www.studynest.uz', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -124,14 +124,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = [
-#     BASE_DIR / "static",
-#
-# ]
-STATICFILES_DIRS = ('home/studynes/studynest.uz/django/static', )
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+
+]
+# STATICFILES_DIRS = ('home/studynes/studynest.uz/django/static', )
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-# STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "static_root")
-STATIC_ROOT = 'home/studynes/studynest.uz/django/staticfiles'
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static_in_env", "static_root")
+# STATIC_ROOT = 'home/studynes/studynest.uz/django/staticfiles'
 # STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type

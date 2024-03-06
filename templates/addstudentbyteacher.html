@@ -1,14 +1,14 @@
 {% extends 'base.html'  %}
 
 {% block title %}
-Yangi talaba qo'shish
+Talaba qo'shish
 {% endblock title %}
 
 {% block content %}
 <div class="row mt-4">
     <div class="col-md-6 offset-md-3 ">
         <div class="card">
-            <div class="card-header"><h1>Yangi talaba qo'shish</h1></div>
+            <div class="card-header text-center"><h3>{{ group.name }} guruhiga talaba qo'shish</h3></div>
             <div class="card-body">
                 <form method="post" >
                     {% csrf_token %}
@@ -18,7 +18,7 @@ Yangi talaba qo'shish
                       </div>
                       <div class="form-group mt-3 ">
                         <label for="last_name">Familiya</label>
-                        <input  required type="text" class="form-control" id="last_name" name="last_name">
+                        <input   type="text" class="form-control" id="last_name" name="last_name">
                       </div>
                       <div class="form-group  mt-3">
                         <label for="phone_number">Telefon raqam</label>
@@ -28,16 +28,9 @@ Yangi talaba qo'shish
                         <label for="phone_number2">Qo'shimcha telefon raqam</label>
                         <input  type="text" class="form-control" id="phone_number2" name="phone_number2">
                       </div>
-                    <div class="form-group  mt-3">
-                        <label for="target">Qayerdan kelgan</label>
-                        <select class="form-select" id="target" name="target" >
-                            {% for target in targets %}
-                            <option value="{{ target.id }}" >{{ target.name }}</option>
-                            {% endfor %}
-                        </select>
-                      </div>
-                      
-                     <div class="w-100 text-end"><button  type="submit" class="btn btn-primary mt-4">Yuborish</button></div> 
+
+
+                     <div class="w-100 text-end"><button  type="submit" class="btn btn-primary mt-4">Yuborish</button></div>
                 </form>
             </div>
         </div>

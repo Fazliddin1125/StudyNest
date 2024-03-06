@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="row py-4  mt-4">
-    <div class="col-md-2  ">
+    <div class=" col-6 col-sm-2  ">
         <a href="{% url 'lids_list' %}" style="cursor: pointer;" >
             <div class="card text-center">
             
@@ -16,7 +16,7 @@
         </a>       
     </div>
 
-    <div class="col-md-2  ">
+    <div class=" col-6 col-sm-2  ">
         <a href="{% url 'students_list' %}" style="cursor: pointer; text-decoration: none;" >
             <div class="card text-center">
             
@@ -29,7 +29,7 @@
         </a>       
     </div>
 
-    <div class="col-md-2  ">
+    <div class="col-6 col-sm-2 col-6  ">
         <a href="{% url 'dept_list' %}" style="cursor: pointer;" >
             <div class="card text-center">
             
@@ -41,7 +41,7 @@
             </div> 
         </a>       
     </div>
-    <div class="col-md-2  ">
+    <div class="col-6 col-sm-2  col-6 ">
 
         <a href="{% url 'teachers' %}" style="cursor: pointer;" >
             <div class="card pt-3 pb-2 text-center">
@@ -55,7 +55,7 @@
             </div> 
         </a>       
     </div>
-    <div class="col-md-2  ">
+    <div class="col-6 col-sm-2 col-6 ">
         <a href="{% url 'spending' %}" style="cursor: pointer;" >
             <div class="card pt-3 pb-2 text-center">
             
@@ -71,7 +71,7 @@
 
 
     {% if request.user.user_role == 'super' %}
-    <div class="col-md-2 ">
+    <div class="col-6 col-sm-2 col-6 ">
         <a href="{% url 'statistics' %}" style="cursor: pointer;" >
             <div class="card pt-3 pb-2 text-center">
 
@@ -85,7 +85,7 @@
     </div>
    
     {% else %}
-    <div class="col-md-2 ">
+    <div class="col-6 col-sm-2 col-6 ">
         <a  style="cursor: pointer;" >
             <div class="card pt-3 pb-2 text-center">
 
@@ -98,7 +98,7 @@
         </a>
     </div>
     {% endif %}
-    <div class="col-md-2 mt-4 ">
+    <div class=" col-6 col-sm-2 mt-4 col-6 ">
         <a href="{% url 'groups' %}" style="cursor: pointer;" >
             <div class="card pt-3 pb-2 text-center">
 
@@ -110,7 +110,7 @@
             </div>
         </a>
     </div>
-    <div class="col-md-2 mt-4">
+    <div class=" col-6 col-sm-2 mt-4 col-6">
         <a href="{% url 'payments' %}" style="cursor: pointer;" >
             <div class="card pt-3 pb-2 text-center">
 
@@ -123,13 +123,38 @@
         </a>
     </div>
     {% if request.user.user_role == 'super' %}
-    <div class="col-md-2 mt-4">
+    <div class=" col-6 col-sm-2 mt-4  col-6">
         <a href="{% url 'given_salary' %}" style="cursor: pointer;" >
             <div class="card pt-3 pb-2 text-center">
 
                 <div class="card-body ">
                     <div class="w-100  mt-1 tag-icon "><i class="bi bi-cash-stack"></i></div>
                     <div class="w-100   mt-1" >Berilgan maoshlar</div>
+
+                </div>
+            </div>
+        </a>
+    </div>
+     <div class=" col-6 col-sm-2 mt-4 col-6">
+        <a href="" style="cursor: pointer;" >
+            <div class="card pt-3 pb-2 text-center">
+
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-list-check"></i></div>
+                    <div class="w-100   mt-1" >Davomat</div>
+
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class=" col-6 col-sm-2 mt-4 col-6">
+        <a href="{% url 'create_group' %}" style="cursor: pointer;" >
+            <div class="card pt-3 pb-2 text-center">
+
+                <div class="card-body ">
+                    <div class="w-100  mt-1 tag-icon "><i class="bi bi-folder-plus"></i></div>
+                    <div class="w-100   mt-1" >Guruh yaratish</div>
+
 
                 </div>
             </div>

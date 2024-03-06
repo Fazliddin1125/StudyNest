@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Guruhlar
+{% endblock title %}
+
+{% block content %}
+<div class="row mt-4 " >
+
+    <div class="col-12">
+        <table class="table ">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Sana</th>
+                <th scope="col">Foiz</th>
+                <th scope="col">Tahrirlash</th>  
+            </tr>
+            </thead>
+            <tbody>
+                {% for attend in attendance %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{  attend.day }}-{{ attend.month }}</td>
+                <td>{{ attend.percentage }} </td>
+                <td  >
+                    <a style="text-decoration: none;" href="" class=""><i class="bi bi-pen-fill"></i></a>
+                </td>
+                
+             </tr>
+             {% endfor %}
+
+            </tbody>
+          </table>
+    </div>
+</div>
+{% endblock content %}

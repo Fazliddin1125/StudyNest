@@ -8,7 +8,7 @@ Barcha to'lovlar
     {% for payment in payments %}
     {% if payment.success == True %}
     <div class="col-md-3 p-2 ">
-       <a href="{% url 'payment_edit' payment.id %}" >
+       <a class="text-dark" style="text-decoration: none" href="{% url 'payment_edit' payment.id %}" >
         <div class="card bg-light ">
             <div class="card-header"><b>{{ payment.student.first_name }} {{ payment.student.last_name }}</b></div>
             <div class="card-body">
@@ -23,6 +23,9 @@ Barcha to'lovlar
                 <p><b>To'lov sanasi: </b>{{ payment.pay_date }}</p>
 
             </div>
+            <div class="card-footer" >
+               <a  style="text-decoration: none" href="{% url 'delete_payment' payment.id %}" ><button class="btn btn-warning" >O'chirish</button></a>
+            </div>
         </div>
        </a>
 
@@ -30,7 +33,7 @@ Barcha to'lovlar
     {% endif %}
     {% if payment.dept == True %}
     <div class="col-md-3 p-2 ">
-       <a href="{% url 'payment_edit' payment.id %}" >
+       <a class="text-white" style="text-decoration: none" href="{% url 'payment_edit' payment.id %}" >
         <div class="card bg-danger text-white">
             <div class="card-header"><b>{{ payment.student.first_name }} {{ payment.student.last_name }}</b></div>
             <div class="card-body">
@@ -44,6 +47,9 @@ Barcha to'lovlar
                 <p><b>To'lov oyi: </b>{{ payment.month }}</p>
                 <p><b>To'lov sanasi: </b>{{ payment.pay_date }}</p>
 
+            </div>
+            <div class="card-footer" >
+               <a style="text-decoration: none" href="{% url 'delete_payment' payment.id %}" ><button class="btn btn-warning" >O'chirish</button></a>
             </div>
         </div>
        </a>

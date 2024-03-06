@@ -51,6 +51,11 @@
                 </form>
 
             </div>
+            <div class="card-footer" >
+                {% for group_student in group_students %}
+                    <div class="text-danger" > {% if group_student.sale == True %} Chegirma mavjud: To'lov summasi-{{ group_student.count }}{% endif %}  </div>
+                {% endfor %}
+            </div>
         </div>
     </div>
 </div>

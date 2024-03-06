@@ -5,7 +5,10 @@ Students
 
 {% block content %}
 
+
+
 <div class="row mt-4 ">
+
     <div class="col-4">
         <form class="d-flex"  method="get">
             <input type="text" placeholder="Search" name="q" class="form-control me-2">
@@ -23,6 +26,7 @@ Students
                 <th scope="col">Username</th>
                 <th scope="col">Telefon</th>
                 <th scope="col">Guruh</th>
+                <th scope="col">Target</th>
                 <th scope="col">Hodisalar</th>
 
               </tr>
@@ -35,16 +39,37 @@ Students
                 <td>{{ student.username }} </td>
                 <td>{{ student.phone_number }}</td>
                 <td>{% for group in student.groupstudent_set.all %} {{ group.group }}{% endfor %}</td>
-                <td  >
+                <td>{{ student.visit_by }}</td>
+                  <td  >
                     <a style="text-decoration: none;" href="{% url 'payment' student.username %}" class=""><i class="bi bi-currency-dollar"></i></a>
                     <a style="text-decoration: none;" href="{% url 'add_group' student.username %}"  class="mx-4"><i class="bi bi-clipboard-plus-fill"></i></a>
                     {% if request.user.user_role == 'super' %}
-                    <a style="text-decoration: none;" href="{% url 'edit_password' student.username %}" class=""><i class="bi bi-pen-fill"></i></a>
-                    {% else %}
-                    <a style="text-decoration: none;"  class=""><i class="bi bi-pen-fill"></i></a>
+                    <a style="text-decoration: none;" href="{% url 'profile_edit' student.username %}" class=""><i class="bi bi-pen-fill"></i></a>
+                    <a href="{% url 'profile_edit' student.username %}" style="text-decoration: none;"  class=""><i class="bi bi-trash-fill"></i></a>
+                      {% else %}
+                    <a href="{% url 'profile_edit' student.username %}" style="text-decoration: none;"  class=""><i class="bi bi-pen-fill"></i></a>
+                       <span  style="text-decoration: none;"  class="ms-4 text-danger" data-bs-toggle="modal" data-bs-target="#exampleModal" ><i class="bi bi-trash-fill"></i></span>
+
                     {% endif %}
                 </td>
              </tr>
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        {{ student.first_name }} {{ student.last_name }}ni o'chirmoqchimisiz ?
+      </div>
+      <div class="modal-footer">
+       <a href="{% url 'delete_student' student.username %}" style="text-decoration: none;"  ><button type="button" class="btn btn-danger" >O'chirish</button></a>
+
+      </div>
+    </div>
+  </div>
+</div>
              {% endfor %}
 
             </tbody>

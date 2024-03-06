@@ -27,7 +27,7 @@
                         <label for="group" class="form-label">Guruh</label>
                         <select required  name="group" id="group" class="form-select" >
                                 {% for group in groups %}
-                                    <option value="{{ group.name }}">{{ group.name }}</option>
+                                    <option value="{{ group.id }}">{{ group.name }}</option>
                                 {% endfor %}
                         </select>
                     </div>

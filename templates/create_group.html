@@ -1,0 +1,97 @@
+{% extends 'base.html'  %}
+
+{% block title %}
+Guruh yaratish
+{% endblock title %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="col-md-6 offset-md-3 ">
+        <div class="card">
+            <div class="card-header"><h1>Guruh yaratish</h1></div>
+            <div class="card-body">
+                <form method="post" >
+                    {% csrf_token %}
+                    <div class="form-group mt-3">
+                        <label for="name">Nomi</label>
+                        <input required type="text" class="form-control" id="name" name="name">
+                      </div>
+                    <div class="form-group  mt-3">
+                        <label for="percentage">Kurs</label>
+                        <select name="course" class="form-select" >
+                            {% for c in course %}
+                            <option value="{{ c.id }}">{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                      <div class="form-group mt-3 ">
+                        <label for="teacher">O'qituvchi</label>
+                        <select class="form-select"  name="teacher">
+                            {% for teacher in teachers %}
+                            <option value="{{ teacher.id }}">{{teacher.first_name}} {{ teacher.last_name }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                      <div class="form-group  mt-3">
+                        <label for="price">Narxi</label>
+                        <input required type="number" class="form-control" id="price" name="price">
+                      </div>
+                    <div class="form-group  mt-3">
+                        <label for="percentage">Foiz</label>
+                        <input  type="number" class="form-control" id="percentage" name="percentage">
+                        <small>O'qituvchiga tegishli foiz.</small>
+                      </div>
+                    <div class="d-flex mt-3" >
+
+                        <div class="col w-50  p-1 " >
+                             <label for="hour" >Boshlanish soati</label>
+                            <select id="hour" name="hour" class="form-select" >
+                                
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+                                <option value="16">16</option>
+                                <option value="17">17</option>
+                                <option value="18">18</option>
+                                <option value="19">19</option>
+                                <option value="20">20</option>
+                                <option value="21">21</option>
+                                <option value="22">22</option>
+                                <option value="23">23</option>
+
+                            </select>
+                            
+                        </div>
+                        <div class="col w-50 p-1 " >
+                             <label for="minute" >Boshlanish minuti</label>
+                        <select name="minute" class="form-select">
+                            <option value="0">00</option>
+                            <option value="30">30</option>
+                        </select>
+                        </div>
+                    </div>
+                    <div class="form-group  mt-3">
+                        <label for="percentage">Kunlar</label>
+                        <select class="form-select"  name="day">
+                            {% for day in days %}
+                                <option value="{{ day.id }}">{{day.name}}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+
+                      
+                     <div class="w-100 text-end"><button  type="submit" class="btn btn-primary mt-4">Yuborish</button></div> 
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
