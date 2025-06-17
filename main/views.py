@@ -624,15 +624,16 @@ class GroupStudentView(LoginRequiredMixin, View):
     def post(self, request, username):
         if request.user.user_role == 'admin' or request.user.user_role == 'super':
             student = get_object_or_404(CustomUser, username=username, user_role='student')
-            group_name = request.POST['group']
-            group = get_object_or_404(Group, name=group_name)
+            group_id = request.POST['group']
+            group = get_object_or_404(Group, id=group_id)
             groupstudents = GroupStudent.objects.filter(student=student)
             date = request.POST['date']
             date_obj = datetime.strptime(date, '%Y-%m-%d').date()
             for groupstudent in groupstudents:
                 if groupstudent.group == group:
                     messages.warning(request, f"{student.first_name} {student.last_name} allaqachon {group}ga qo'shilgan")
-                    return redirect('students_list')
+                    return redirect('index')
+
             new_grst = GroupStudent.objects.create(
                 student=student,
                 group=group,
@@ -642,7 +643,7 @@ class GroupStudentView(LoginRequiredMixin, View):
             student.user_type = 'active'
             student.save()
             messages.success(request, f"{student.first_name} {student.last_name} {group}ga qo'shildi.")
-            return redirect('students_list')
+            return redirect('index')
         else:
             messages.warning(request, f"Sizga bu amal uchun admin tomonidan ruxsat berilmagan.")
             return render(request, '404.html')
